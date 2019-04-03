@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.aptech.business.index">
+		<resultMap type="IndexEntity" id="Index_temp">
+			<result property="id" column="C_ID" />
+			<result property="news" column="C_NEWS" />
+			<result property="isUrl" column="C_IS_URL" />
+			<result property="newsUrl" column="C_NEWS_URL" />
+        </resultMap>
+		
+		<!-- 获取所有数据 -->
+		<select id="findAll" resultMap="Index_temp">
+			<![CDATA[
+				SELECT * FROM TB_INDEX 
+			]]>
+		</select>
+		
+		<!-- 获取所有数据条数 -->
+		<select id="total" resultType="int">
+			<![CDATA[
+				SELECT count(1) FROM TB_INDEX 
+			]]>
+		</select>
+		
+		<!-- 根据id查询 -->
+		<select id="findById" parameterType="long" resultMap="Index_temp">
+			<![CDATA[
+				SELECT * FROM TB_INDEX  WHERE C_ID=#{id}
+			]]>
+		</select>
+		
+		<!-- 添加数据 -->
+		<insert id="insert" parameterType="IndexEntity">
+			<selectKey resultType="Long" order="AFTER" keyProperty="id">
+				SELECT LAST_INSERT_ID() AS id
+			</selectKey>
+			<!-- ORACLE 数据库需要增加SEQUENCE配置
+			<selectKey keyProperty="id" resultType="Long" order="BEFORE">
+		      select SEQ_TP_APP.nextval from dual  
+		    </selectKey>-->
+			<![CDATA[
+				INSERT INTO TB_INDEX 
+				(
+		          C_NEWS
+		        , C_IS_URL
+		        , C_NEWS_URL
+				)
+				VALUES
+				(
+		         #{news}
+	           , #{isUrl}
+	           , #{newsUrl}
+				)
+			]]>
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="update" parameterType="IndexEntity">
+			<![CDATA[
+				UPDATE TB_INDEX SET
+                   C_NEWS=#{news}
+	             , C_IS_URL=#{isUrl}
+	             , C_NEWS_URL=#{newsUrl}
+				WHERE C_ID=#{id}
+			]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<update id="delete" parameterType="IndexEntity">
+			<![CDATA[
+				DELETE FROM TB_INDEX WHERE C_ID=#{id}
+			]]>
+		</update>
+		
+		<!-- 根据条件查询 -->
+		<select id="findByCondition" parameterType="map" resultMap="Index_temp">
+			<![CDATA[ 
+				SELECT * FROM TB_INDEX 
+			]]>
+			<include refid="com.aptech.dao.base.conditionSql"/>
+		</select>
+    </mapper>

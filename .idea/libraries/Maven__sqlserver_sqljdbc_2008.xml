@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: sqlserver:sqljdbc:2008">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/sqlserver/sqljdbc/2008/sqljdbc-2008.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/sqlserver/sqljdbc/2008/sqljdbc-2008-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/sqlserver/sqljdbc/2008/sqljdbc-2008-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

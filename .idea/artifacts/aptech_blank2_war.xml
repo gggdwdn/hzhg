@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="aptech-blank2:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <root id="archive" name="hzhg.war">
+      <element id="artifact" artifact-name="aptech-blank2:war exploded" />
+    </root>
+  </artifact>
+</component>

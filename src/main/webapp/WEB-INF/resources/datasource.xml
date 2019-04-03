@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatasourceManager xmlVersion="20170720" releaseVersion="9.0.0">
+<ConnectionMap>
+<Connection name="JDBC2" class="com.fr.data.impl.JDBCDatabaseConnection">
+<DatabaseAttr originalCharsetName="UTF-8" newCharsetName="UTF-8"/>
+<JDBCDatabaseAttr url="jdbc:mysql://localhost:3306/aptech-blank" driver="com.mysql.jdbc.Driver" user="root" password="___0022007c0039003b005100e3" encryptPassword="true">
+<DBCPAttr/>
+</JDBCDatabaseAttr>
+</Connection>
+<Connection name="JDBC3" class="com.fr.data.impl.JDBCDatabaseConnection">
+<DatabaseAttr originalCharsetName="UTF-8" newCharsetName="UTF-8"/>
+<JDBCDatabaseAttr url="jdbc:mysql://172.16.20.221:3306/prod_opera" driver="com.mysql.jdbc.Driver" user="prod_opera" password="___0063003c0065006b003b00ba005b00720061002f" encryptPassword="true">
+<!-- <JDBCDatabaseAttr url="jdbc:mysql://localhost:3306/prod_opera" driver="com.mysql.jdbc.Driver" user="root" password="___0022007c0039003b005100e3" encryptPassword="true"> -->
+<DBCPAttr/>
+</JDBCDatabaseAttr>
+</Connection>
+</ConnectionMap>
+<TableDataMap>
+</TableDataMap>
+</DatasourceManager>

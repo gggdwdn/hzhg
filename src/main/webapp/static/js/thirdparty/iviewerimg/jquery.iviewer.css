@@ -1,0 +1,172 @@
+.viewer {
+    -ms-touch-action: none;
+}
+.viewer img {
+    image-orientation: from-image;
+}
+.iviewer_common {
+    position:absolute;
+    bottom:10px;
+    border: 1px  solid #000;
+    height: 28px;
+    z-index: 5000;
+}
+
+.iviewer_cursor {
+    cursor: url(img/hand.cur) 6 8, pointer;
+}
+
+.iviewer_drag_cursor {
+    cursor: url(img/grab.cur) 6 8, pointer;
+}
+
+.iviewer_button {
+    width: 28px;
+    cursor: pointer;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.iviewer_zoom_in {
+    left: 20px;
+    background: url(img/iviewer.zoom_in.gif) center center no-repeat;
+    background-size: cover;
+}
+
+.iviewer_zoom_out {
+    left: 55px;
+    background: url(img/iviewer.zoom_out.gif) center center no-repeat;
+    background-size: cover;
+}
+
+.iviewer_zoom_zero {
+	display:none;
+    left: 90px;
+    background: url(img/iviewer.zoom_zero.gif) center center no-repeat;
+    background-size: cover;
+}
+
+.iviewer_zoom_fit {
+	left: 90px;
+    background: url(img/iviewer.zoom_fit.gif) center center no-repeat;
+    background-size: cover;
+}
+
+.iviewer_zoom_status {
+    left: 90px;
+    font: 1em/28px Sans;
+    color: #000;
+    background-color: #fff;
+    text-align: center;
+    width: 60px;
+}
+
+.iviewer_rotate_left {
+    left: 160px;
+    background: #fff url(img/iviewer.rotate_left.png) center center no-repeat;
+    background-size: cover;
+}
+
+.iviewer_rotate_right {
+    left: 197px;
+    background: #fff url(img/iviewer.rotate_right.png) center center no-repeat;
+    background-size: cover;
+}
+
+#iviewer .controls {
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 40px;
+}
+
+#iviewer .controls li {
+	float: right;
+	clear: right;
+	position: relative;
+	width: 40px;
+	height: 40px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	display: block;
+	cursor: pointer;
+	z-index: 3;
+}
+
+#iviewer .controls:hover {
+	cursor: pointer;
+}
+
+#iviewer .controls .close { background-image: url('img/btn_close.png'); }
+#iviewer .controls .zoomin { background-image: url('img/btn_zoomin.png'); }
+#iviewer .controls .zoomout { background-image: url('img/btn_zoomout.png'); }
+#iviewer .controls .next { background-image: url('img/btn_next.png'); }		
+
+#iviewer .info {
+	position: fixed;
+	bottom: 0;
+	width: 300px;
+	left: 50%;
+	margin-left: -150px;
+	display: block;		
+	text-align:center;		
+	color: #ccc;
+	font-size: 18px;
+	padding: 0;
+	z-index: 2;
+}
+
+#iviewer .info p {
+	display:inline;
+	vertical-align: top;				
+}
+
+#iviewer .viewer {
+	position: fixed;
+	top: 0;
+	left: 40px;
+	z-index: 2;
+	display: none;
+}
+#iviewer .loader {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	background: url('img/spinner.gif') no-repeat center center;
+	z-index: 2;
+}
+
+#iviewer{
+	left:0;
+	top:0;
+	background: url('img/bg_transblack.png');
+	position: absolute;
+	z-index: 1100;
+} 
+.iviewerArrowLeft{
+	background:url(img/left.png) center center no-repeat;
+    background-size: cover;
+    left:240px;
+}
+.iviewerArrowRight{
+	background:url(img/right.png) center center no-repeat;
+    background-size: cover;
+    left:300px;
+}
+.iviewerArrow{
+	position: absolute;
+    bottom: 10px;
+    top: auto;
+    width: 40px;
+    height: 28px;
+}
+#closeSelfId{
+	background:url(img/close.png) center center no-repeat;
+    background-size: cover;
+    width:40px;
+    height:40px;
+    float: right;
+    margin-right: 10px;
+    margin-top: 10px;
+    overflow: hidden;
+}

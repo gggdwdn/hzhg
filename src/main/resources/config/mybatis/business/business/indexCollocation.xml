@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.aptech.business.indexCollocation">
+		<resultMap type="IndexCollocationEntity" id="IndexCollocation_temp">
+			<result property="id" column="C_ID" />
+			<result property="row" column="C_ROW" />
+			<result property="column" column="C_COLUMN" />
+			<result property="columnSpan" column="C_COLUMN_SPAN" />
+			<result property="height" column="C_HEIGHT" />
+			<result property="columnId" column="C_COLUMN_ID" />
+			<result property="indexId" column="C_INDEX_ID" />
+			<result property="title" column="C_TITLE" />
+			<result property="type" column="C_TYPE" />
+			<result property="moreUrl" column="C_MORE_URL" />
+			<result property="headIcon" column="C_HEAD_ICON" />
+			<result property="images" column="C_IMAGES" />
+			<result property="url" column="C_URL" />
+			<result property="advertUrl" column="C_ADVERT_URL" />
+			<result property="implementUrl" column="C_IMPLEMENT_URL" />
+        </resultMap>
+		
+		<!-- 获取所有数据 -->
+		<select id="findAll" resultMap="IndexCollocation_temp">
+			<![CDATA[
+				SELECT t.*,t1.C_TITLE,t1.C_TYPE,t1.C_MORE_URL,t1.C_HEAD_ICON,t1.C_IMAGES,t1.C_URL,t1.C_ADVERT_URL,t1.C_IMPLEMENT_URL
+				FROM TB_INDEX_COLLOCATION t left join TB_COLUMN t1 on t.C_COLUMN_ID = t1.C_ID
+			]]>
+		</select>
+		
+		<!-- 获取所有数据条数 -->
+		<select id="total" resultType="int">
+			<![CDATA[
+				SELECT count(1) FROM TB_INDEX_COLLOCATION 
+			]]>
+		</select>
+		
+		<!-- 根据id查询 -->
+		<select id="findById" parameterType="long" resultMap="IndexCollocation_temp">
+			<![CDATA[
+				SELECT * FROM TB_INDEX_COLLOCATION  WHERE C_ID=#{id}
+			]]>
+		</select>
+		
+		<!-- 添加数据 -->
+		<insert id="insert" parameterType="IndexCollocationEntity">
+			<selectKey resultType="Long" order="AFTER" keyProperty="id">
+				SELECT LAST_INSERT_ID() AS id
+			</selectKey>
+			<!-- ORACLE 数据库需要增加SEQUENCE配置
+			<selectKey keyProperty="id" resultType="Long" order="BEFORE">
+		      select SEQ_TP_APP.nextval from dual  
+		    </selectKey>-->
+			<![CDATA[
+				INSERT INTO TB_INDEX_COLLOCATION 
+				(
+		          C_ROW
+		        , C_COLUMN
+		        , C_COLUMN_SPAN
+		        , C_HEIGHT
+		        , C_COLUMN_ID
+		        , C_INDEX_ID
+				)
+				VALUES
+				(
+		         #{row}
+	           , #{column}
+	           , #{columnSpan}
+	           , #{height}
+	           , #{columnId}
+	           , #{indexId}
+				)
+			]]>
+		</insert>
+		
+		<!-- 修改数据 -->
+		<update id="update" parameterType="IndexCollocationEntity">
+			<![CDATA[
+				UPDATE TB_INDEX_COLLOCATION SET
+                   C_ROW=#{row}
+	             , C_COLUMN=#{column}
+	             , C_COLUMN_SPAN=#{columnSpan}
+	             , C_HEIGHT=#{height}
+	             , C_COLUMN_ID=#{columnId}
+	             , C_INDEX_ID=#{indexId}
+				WHERE C_ID=#{id}
+			]]>
+		</update>
+		
+		<!-- 删除数据 -->
+		<update id="delete" parameterType="IndexCollocationEntity">
+			<![CDATA[
+				DELETE FROM TB_INDEX_COLLOCATION WHERE C_ID=#{id}
+			]]>
+		</update>
+		<update id="deleteByIndexId" parameterType="Long">
+			<![CDATA[
+				DELETE FROM TB_INDEX_COLLOCATION WHERE C_INDEX_ID=#{id}
+			]]>
+		</update>
+		
+		<!-- 根据条件查询 -->
+		<select id="findByCondition" parameterType="map" resultMap="IndexCollocation_temp">
+			<![CDATA[ 
+				SELECT t.*,t1.C_TITLE,t1.C_TYPE,t1.C_MORE_URL,t1.C_HEAD_ICON,t1.C_IMAGES,t1.C_URL,t1.C_ADVERT_URL,t1.C_IMPLEMENT_URL
+				FROM TB_INDEX_COLLOCATION t left join TB_COLUMN t1 on t.C_COLUMN_ID = t1.C_ID
+			]]>
+			<include refid="com.aptech.dao.base.conditionSql"/>
+		</select>
+    </mapper>

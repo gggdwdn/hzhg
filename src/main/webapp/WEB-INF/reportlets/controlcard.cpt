@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20170720" releaseVersion="9.0.0">
+<TableDataMap>
+<TableData name="workTicket" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="id"/>
+<O t="I">
+<![CDATA[0]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[JDBC3]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT t.*,a.C_NAME as unitName ,b.C_NAME as groupName 
+FROM TB_WORKTICKET t LEFT JOIN TP_SYS_UNIT a on t.C_UNIT_NAME_ID=a.C_ID  LEFT JOIN  TB_TEAM_GROUP b on t.C_GROUP_ID=b.C_ID
+where t.c_id=${id}]]></Query>
+</TableData>
+<TableData name="teamGroup" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[JDBC3]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from tb_team_group]]></Query>
+</TableData>
+<TableData name="defect" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[JDBC3]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from tb_defect ]]></Query>
+</TableData>
+<TableData name="windpower" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="id"/>
+<O t="I">
+<![CDATA[0]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[JDBC3]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from tb_workticket_windpower where  C_WORKTICKET_ID =${id}]]></Query>
+</TableData>
+<TableData name="equip" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[JDBC3]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from tb_equip_ledger where c_status = 1]]></Query>
+</TableData>
+<TableData name="safe1" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="id"/>
+<O t="I">
+<![CDATA[0]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[JDBC3]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from tb_workticket_safe where C_WORKTICKET_ID =  ${id} and C_SAFE_TYPE=1]]></Query>
+</TableData>
+<TableData name="user" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[JDBC3]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from tp_sys_user where c_status = 1]]></Query>
+</TableData>
+<TableData name="controlcard" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="id"/>
+<O t="I">
+<![CDATA[0]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[JDBC3]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select * from tb_workticket_controlcard where C_WORKTICKET_ID=${id} ]]></Query>
+</TableData>
+<TableData name="controlcardRisk" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="id"/>
+<O t="I">
+<![CDATA[0]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[JDBC3]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[select t.* from tb_controlcard_risk t 
+left join tb_workticket_controlcard t1 on t.C_CONTROL_ID = t1.c_id
+where t1.C_WORKTICKET_ID = ${id}]]></Query>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<WebWriteContent>
+<Listener event="beforedelete">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[window.deleteflag=1;]]></Content>
+</JavaScript>
+</Listener>
+<Listener event="beforeappend">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[window.appendflag=1;]]></Content>
+</JavaScript>
+</Listener>
+<Listener event="afterload">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[if(window.deleteflag==1||window.appendflag==1){//如果是删除或者添加标记的，重新编号   
+   var $tds=$('.x-table td[col=0]A:visible');//获取第2列中可见的单元格（B列)    
+   var n=0;  
+   var length = 0; 
+   $tds.each(function(i,e){   
+   	length = length+1;
+   }); 
+   $tds.each(function(i,e){  
+   	if(length-9>i){
+   		if(i>=24){//模版中从哪一可见行开始编号的，行号是从0开始的，所以用行号-1，比如这个模板是从第3行开始的，就是2             
+          n=n+1;   
+          $(e).text(n);//将当前编号重新设置   
+         } 
+   	}
+   
+   });   
+   window.deleteflag=0;//清除删除行标记   
+   window.appendflag=0;//清除添加行标记   
+ }  ]]></Content>
+</JavaScript>
+</Listener>
+<Listener event="writesuccess">
+<JavaScript class="com.fr.js.Commit2DBJavaScript">
+<Parameters/>
+<Attributes dsName="JDBC3" name="提交1"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="tb_workticket_windpower"/>
+<ColumnConfig name="C_ID" isKey="true" skipUnmodified="false">
+<ColumnRow column="27" row="26"/>
+</ColumnConfig>
+<ColumnConfig name="C_WORKTICKET_ID" isKey="false" skipUnmodified="false">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(AB4!=null && AB4!="",AB4,sql("JDBC3","SELECT C_ID FROM TB_WORKTICKET ORDER BY C_ID DESC LIMIT 0,1",1))]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="C_REMARK_GUARDER_ID" isKey="false" skipUnmodified="false">
+<ColumnRow column="5" row="28"/>
+</ColumnConfig>
+<ColumnConfig name="C_REMARK_GUARDER_NAME" isKey="false" skipUnmodified="false">
+<ColumnRow column="27" row="28"/>
+</ColumnConfig>
+<ColumnConfig name="C_REMARK_RESPONSIBLE_NAME" isKey="false" skipUnmodified="false">
+<ColumnRow column="8" row="30"/>
+</ColumnConfig>
+<ColumnConfig name="C_REMARK_OTHER" isKey="false" skipUnmodified="false">
+<ColumnRow column="3" row="32"/>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.ListCondition"/>
+</DMLConfig>
+<Attributes dsName="JDBC3" name="提交2"/>
+<DMLConfig class="com.fr.write.config.UpdateConfig">
+<Table schema="" name="tb_workticket_safe"/>
+<ColumnConfig name="C_WORKTICKET_ID" isKey="false" skipUnmodified="false">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=if(AB4!=null && AB4!="",AB4,sql("JDBC3","SELECT C_ID FROM TB_WORKTICKET ORDER BY C_ID DESC LIMIT 0,1",1))]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="C_UUID_CODE" isKey="true" skipUnmodified="false">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=$p1]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="C_SAFE_TYPE" isKey="true" skipUnmodified="false">
+<O>
+<![CDATA[1]]></O>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.ListCondition"/>
+</DMLConfig>
+<Attributes dsName="JDBC3" name="提交3"/>
+<DMLConfig class="com.fr.write.config.UpdateConfig">
+<Table schema="" name="tb_workticket_controlcard"/>
+<ColumnConfig name="C_ID" isKey="true" skipUnmodified="false">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=sql("JDBC3","SELECT C_ID FROM tb_workticket_controlcard ORDER BY C_ID DESC LIMIT 0,1",1)]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="C_WORKTICKET_ID" isKey="false" skipUnmodified="false">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=sql("JDBC3","SELECT C_ID FROM tb_workticket ORDER BY C_ID DESC LIMIT 0,1",1)]]></Attributes>
+</O>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.ListCondition"/>
+</DMLConfig>
+<Attributes dsName="JDBC3" name="提交4"/>
+<DMLConfig class="com.fr.write.config.UpdateConfig">
+<Table schema="" name="tb_controlcard_risk"/>
+<ColumnConfig name="C_CONTROL_ID" isKey="false" skipUnmodified="false">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=sql("JDBC3","SELECT C_ID FROM tb_workticket_controlcard ORDER BY C_ID DESC LIMIT 0,1",1)]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="C_UUID_CODE" isKey="true" skipUnmodified="false">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=$p1]]></Attributes>
+</O>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.ListCondition"/>
+</DMLConfig>
+</JavaScript>
+</Listener>
+<ToolBars/>
+<SelectedColor/>
+<WebWrite SheetPosition="1"/>
+<RptLocation isShowAtLeft="false"/>
+<UnloadCheck/>
+<ShowWidgets/>
+<OtherAttr isAutoStash="false"/>
+</WebWriteContent>
+</ReportWebAttr>
+<ElementCaseMobileAttr>
+<ElementCaseMobileAttrProvider horizontal="1" vertical="1" zoom="true" refresh="false" isUseHTML="false" isMobileCanvasSize="false"/>
+</ElementCaseMobileAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="安全风险控制卡">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+</ReportPageAttr>
+<ColumnPrivilegeControl/>
+<RowPrivilegeControl/>
+<RowHeight defaultValue="723900">
+<![CDATA[4572000,1371600,1257300,495300,914400,838200,876300,838200,800100,1181100,1066800,876300,723900,1143000,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[838200,800100,800100,800100,800100,914400,914400,876300,952500,952500,990600,952500,990600,990600,914400,952500,1028700,990600,990600,1028700,1028700,1028700,990600,990600,990600,0,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="25" r="0">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=$p1]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="1" cs="4">
+<O>
+<![CDATA[工作负责人]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="1" cs="5" s="0">
+<O t="DSColumn">
+<Attributes dsName="workTicket" columnName="C_GUARDER_NAME"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="1" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="15" r="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="16" r="1" cs="2">
+<O>
+<![CDATA[编号]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="18" r="1" cs="7" s="0">
+<O t="DSColumn">
+<Attributes dsName="workTicket" columnName="C_CODE"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="25" r="1">
+<O t="DSColumn">
+<Attributes dsName="controlcard" columnName="C_ID"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Expand dir="0"/>
+</C>
+<C c="0" r="2" cs="4">
+<O>
+<![CDATA[工作内容]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="2" cs="21" s="2">
+<O t="DSColumn">
+<Attributes dsName="workTicket" columnName="C_CONTENT"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="4" cs="4">
+<O>
+<![CDATA[作业类别]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="4" cs="2">
+<O>
+<![CDATA[（1）]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="4" cs="19">
+<O t="DSColumn">
+<Attributes dsName="controlcard" columnName="C_CARD_SORT"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Widget class="com.fr.form.ui.CheckBoxGroup">
+<WidgetAttr disabled="true" description="">
+<PrivilegeControl/>
+</WidgetAttr>
+<EMSG>
+<![CDATA[作业类别1未选择]]></EMSG>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<Dictionary class="com.fr.data.impl.CustomDictionary">
+<CustomDictAttr>
+<Dict key="3" value="检查"/>
+<Dict key="2" value="调试"/>
+<Dict key="1" value="安装"/>
+<Dict key="7" value="清扫"/>
+<Dict key="6" value="试验"/>
+<Dict key="5" value="检修"/>
+<Dict key="4" value="维护"/>
+</CustomDictAttr>
+</Dictionary>
+<widgetValue/>
+<BGAttr columnsInRow="7"/>
+<NotAdaptive/>
+<RAAttr isArray="false"/>
+</Widget>
+<Expand/>
+</C>
+<C c="4" r="5" cs="2">
+<O>
+<![CDATA[（2）]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="5" cs="19" rs="2">
+<O t="DSColumn">
+<Attributes dsName="controlcard" columnName="C_CARD_SORT_TWO"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Widget class="com.fr.form.ui.CheckBoxGroup">
+<WidgetAttr disabled="true" description="">
+<PrivilegeControl/>
+</WidgetAttr>
+<EMSG>
+<![CDATA[作业类别2未选择]]></EMSG>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<Dictionary class="com.fr.data.impl.CustomDictionary">
+<CustomDictAttr>
+<Dict key="3" value="起重作业"/>
+<Dict key="2" value="高处作业"/>
+<Dict key="1" value="动火作业"/>
+<Dict key="7" value="射线探伤"/>
+<Dict key="6" value="化学清洗"/>
+<Dict key="5" value="水冲洗"/>
+<Dict key="4" value="临时用电"/>
+</CustomDictAttr>
+</Dictionary>
+<widgetValue/>
+<BGAttr columnsInRow="6"/>
+<NotAdaptive/>
+<RAAttr isArray="false"/>
+</Widget>
+<Expand/>
+</C>
+<C c="4" r="7" cs="2">
+<O>
+<![CDATA[（3）]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="7" cs="19">
+<O t="DSColumn">
+<Attributes dsName="controlcard" columnName="C_CARD_SORT_THREE"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Widget class="com.fr.form.ui.CheckBoxGroup">
+<WidgetAttr disabled="true" description="">
+<PrivilegeControl/>
+</WidgetAttr>
+<EMSG>
+<![CDATA[作业类别3未选择]]></EMSG>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<Dictionary class="com.fr.data.impl.CustomDictionary">
+<CustomDictAttr>
+<Dict key="3" value="基坑支护"/>
+<Dict key="2" value="土方开挖"/>
+<Dict key="1" value="受限空间"/>
+<Dict key="5" value="模板安装"/>
+<Dict key="4" value="脚手架搭拆"/>
+</CustomDictAttr>
+</Dictionary>
+<widgetValue/>
+<BGAttr columnsInRow="5"/>
+<NotAdaptive/>
+<RAAttr isArray="false"/>
+</Widget>
+<Expand/>
+</C>
+<C c="4" r="8" cs="2">
+<O>
+<![CDATA[（4）]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="8" cs="19">
+<O t="DSColumn">
+<Attributes dsName="controlcard" columnName="C_CARD_SORT_FOUR"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Widget class="com.fr.form.ui.CheckBoxGroup">
+<WidgetAttr disabled="true" description="">
+<PrivilegeControl/>
+</WidgetAttr>
+<EMSG>
+<![CDATA[作业类别4未选择]]></EMSG>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<Dictionary class="com.fr.data.impl.CustomDictionary">
+<CustomDictAttr>
+<Dict key="1" value="其他"/>
+</CustomDictAttr>
+</Dictionary>
+<widgetValue/>
+<BGAttr columnsInRow="1"/>
+<NotAdaptive/>
+<RAAttr isArray="false"/>
+</Widget>
+<Expand/>
+</C>
+<C c="0" r="9" cs="4">
+<O>
+<![CDATA[补充说明]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="9" cs="21" s="2">
+<O t="DSColumn">
+<Attributes dsName="controlcard" columnName="C_CARD_DESCRIPTION"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="10" cs="5">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="10" cs="20" rs="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="workTicket" columnName="C_WORK_CLASS_MEMBER"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="11" cs="5">
+<O>
+<![CDATA[工作班成员签字]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="13" cs="9">
+<O>
+<![CDATA[作业风险分析与主要预控措施]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="14" cs="14" s="3">
+<O>
+<![CDATA[危险点分析]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="14" cs="11" s="3">
+<O>
+<![CDATA[主要预控措施]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="15" cs="14" s="3">
+<O t="DSColumn">
+<Attributes dsName="controlcardRisk" columnName="C_DANGER_POINT"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Expand dir="0"/>
+</C>
+<C c="14" r="15" cs="11" s="3">
+<O t="DSColumn">
+<Attributes dsName="controlcardRisk" columnName="C_MAIN_CONTROL"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Expand dir="0"/>
+</C>
+<C c="25" r="15">
+<O t="DSColumn">
+<Attributes dsName="controlcardRisk" columnName="C_ID"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Expand dir="0"/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting/>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+<ReportWriteAttr>
+<SubmitVisitor class="com.fr.report.write.BuiltInSQLSubmiter">
+<Name>
+<![CDATA[内置SQL1]]></Name>
+<Attributes dsName="JDBC3"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="tb_workticket_controlcard"/>
+<ColumnConfig name="C_ID" isKey="true" skipUnmodified="false">
+<ColumnRow column="25" row="1"/>
+</ColumnConfig>
+<ColumnConfig name="C_CARD_SORT" isKey="false" skipUnmodified="false">
+<ColumnRow column="6" row="4"/>
+</ColumnConfig>
+<ColumnConfig name="C_CARD_DESCRIPTION" isKey="false" skipUnmodified="false">
+<ColumnRow column="4" row="9"/>
+</ColumnConfig>
+<ColumnConfig name="C_CARD_SORT_TWO" isKey="false" skipUnmodified="false">
+<ColumnRow column="6" row="5"/>
+</ColumnConfig>
+<ColumnConfig name="C_CARD_SORT_THREE" isKey="false" skipUnmodified="false">
+<ColumnRow column="6" row="7"/>
+</ColumnConfig>
+<ColumnConfig name="C_CARD_SORT_FOUR" isKey="false" skipUnmodified="false">
+<ColumnRow column="6" row="8"/>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.ListCondition"/>
+</DMLConfig>
+</SubmitVisitor>
+<SubmitVisitor class="com.fr.report.write.BuiltInSQLSubmiter">
+<Name>
+<![CDATA[内置SQL2]]></Name>
+<Attributes dsName="JDBC3"/>
+<DMLConfig class="com.fr.write.config.InsertConfig">
+<Table schema="" name="tb_controlcard_risk"/>
+<ColumnConfig name="C_ID" isKey="true" skipUnmodified="false">
+<ColumnRow column="25" row="15"/>
+</ColumnConfig>
+<ColumnConfig name="C_DANGER_POINT" isKey="false" skipUnmodified="false">
+<ColumnRow column="0" row="15"/>
+</ColumnConfig>
+<ColumnConfig name="C_MAIN_CONTROL" isKey="false" skipUnmodified="false">
+<ColumnRow column="14" row="15"/>
+</ColumnConfig>
+<ColumnConfig name="C_UUID_CODE" isKey="false" skipUnmodified="false">
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=$p1]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="C_CONTROL_ID" isKey="false" skipUnmodified="false">
+<ColumnRow column="25" row="1"/>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.ListCondition"/>
+</DMLConfig>
+</SubmitVisitor>
+</ReportWriteAttr>
+<PrivilegeControl/>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0" useParamsTemplate="true"/>
+<PWTitle>
+<![CDATA[参数]]></PWTitle>
+<Parameter>
+<Attributes name="p1"/>
+<O t="Formula" class="Formula">
+<Attributes>
+<![CDATA[=uuid()]]></Attributes>
+</O>
+</Parameter>
+</ReportParameterAttr>
+<StyleList>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Bottom style="1" color="-16777216"/>
+</Border>
+</Style>
+<Style horizontal_alignment="4" imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Bottom style="1" color="-16777216"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="SimSun" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border>
+<Top style="1" color="-16777216"/>
+<Bottom style="1" color="-16777216"/>
+<Left style="1" color="-16777216"/>
+<Right style="1" color="-16777216"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="JAA"/>
+<PreviewType PreviewType="1"/>
+<TemplateID TemplateID="8158462e-5f72-4144-9cf5-f6ff885f06fa"/>
+<TemplateIdAttMark class="com.fr.base.iofileattr.TemplateIdAttrMark">
+<TemplateIdAttMark TemplateId="5507ecd2-b015-4943-aa1e-1a30dd73df72"/>
+</TemplateIdAttMark>
+</WorkBook>
